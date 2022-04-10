@@ -13,5 +13,5 @@ class FacePokeHttpRoutes private {
 }
 
 object FacePokeHttpRoutes {
-  def create = new FacePokeHttpRoutes
+  def apply() = new FacePokeHttpRoutes
 }

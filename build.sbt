@@ -1,4 +1,4 @@
-import LibraryDependencies.{ circeGeneric, http4sCirce, http4sDsl, http4sServer }
+import LibraryDependencies._
 
 inThisBuild(
   List(
@@ -24,7 +24,8 @@ libraryDependencies ++= Seq(
   http4sServer,
   http4sCirce,
   circeGeneric,
-  http4sDsl
+  http4sDsl,
+  logback
 )
 
 lazy val root = (project in file("."))

@@ -10,9 +10,10 @@ object FacePokeApplication extends IOApp {
   override def run(args: List[String]): IO[ExitCode] =
     BlazeServerBuilder[IO]
       .bindHttp(Configuration.serverPort, Configuration.serverHost)
-      .withHttpApp(FacePokeHttpRoutes.create.facePokeRoutes) // alternative: apis
-      .resource
-      .use(_ => IO.never)
+      .withHttpApp(FacePokeHttpRoutes().facePokeRoutes) // alternative: apis
+      .serve
+      .compile
+      .drain
       .as(ExitCode.Success)
 
 }
