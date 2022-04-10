@@ -24,8 +24,10 @@ libraryDependencies ++= Seq(
   http4sServer,
   http4sCirce,
   circeGeneric,
+  circeLiteral,
   http4sDsl,
-  logback
+  logback,
+  scalaTest
 )
 
 lazy val root = (project in file("."))
