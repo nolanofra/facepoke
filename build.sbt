@@ -1,3 +1,5 @@
+import LibraryDependencies.{ circeGeneric, http4sCirce, http4sDsl, http4sServer }
+
 inThisBuild(
   List(
     organization := "nolanofra",
@@ -16,6 +18,13 @@ lazy val projectSettings = Seq(
   organization := "com.nolanofra",
   scalaVersion := "2.13.8",
   scalafmtOnCompile := true
+)
+
+libraryDependencies ++= Seq(
+  http4sServer,
+  http4sCirce,
+  circeGeneric,
+  http4sDsl
 )
 
 lazy val root = (project in file("."))
