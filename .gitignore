@@ -1,2 +1,16 @@
 *.class
 *.log
+target/
+
+#sbt specific
+.cache
+.histort
+.lib/
+dist/*
+
+
+#Intellij IDE
+*.iml
+.idea/
+.bsp/
+out/
