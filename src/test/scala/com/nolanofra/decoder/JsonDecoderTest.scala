@@ -74,7 +74,7 @@ class JsonDecoderTest extends AnyFunSuite {
 
     val actual = speciesDetailDecoder.decodeJson(input)
 
-    val expectedResult = FlavorTextEntries(
+    val expectedResult = PokemonSpecies(
       List(
         FlavorText("some flavor text", Language("en")),
         FlavorText("some japanese flavor text", Language("ja")),

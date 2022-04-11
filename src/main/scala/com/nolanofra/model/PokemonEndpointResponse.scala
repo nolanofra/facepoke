@@ -8,7 +8,7 @@ object PokemonEndpointResponse {
 
   case class Species(name: String, url: Uri)
 
-  case class FlavorTextEntries(flavorTextEntries: List[FlavorText])
+  case class PokemonSpecies(flavorTextEntries: List[FlavorText])
 
   case class FlavorText(text: String, language: Language)
 

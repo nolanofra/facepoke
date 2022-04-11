@@ -23,6 +23,7 @@ lazy val projectSettings = Seq(
 libraryDependencies ++= Seq(
   http4sServer,
   http4sCirce,
+  http4sClient,
   circeGeneric,
   circeLiteral,
   http4sDsl,
