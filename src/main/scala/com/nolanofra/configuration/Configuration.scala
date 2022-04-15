@@ -3,13 +3,15 @@ package com.nolanofra.configuration
 import cats.effect.IO
 import com.typesafe.config.ConfigFactory
 
-case class PokeApiEndpointConfiguration(baseUrl: String)
+case class ApiEndpointConfiguration(pokeApiBaseUrl: String, translateAPiBaseUrl: String)
 
 object Configuration {
   val serverHost = "0.0.0.0"
   val serverPort = 5000
 
-  def loadPokemonEndpointBaseUrl: IO[PokeApiEndpointConfiguration] =
+  def loadPokemonEndpointBaseUrl: IO[ApiEndpointConfiguration] =
     IO.apply(ConfigFactory.load)
-      .map(config => PokeApiEndpointConfiguration(config.getString("pokeAPI.baseUrl")))
+      .map(config =>
+        ApiEndpointConfiguration(config.getString("pokeAPI.baseUrl"), config.getString("translationAPI.baseUrl"))
+      )
 }
