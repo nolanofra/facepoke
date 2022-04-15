@@ -3,23 +3,22 @@ package com.nolanofra.api
 import cats.effect.IO
 import cats.implicits.catsSyntaxApplicativeErrorId
 import com.nolanofra.api.error.Errors._
-import com.nolanofra.model.PokemonEndpointResponse.{ Pokemon, PokemonSpecies }
-import com.nolanofra.model.decoder.JsonDecoder._
+import com.nolanofra.service.model.PokemonEndpointResponse.PokemonSpecies
 import io.circe.Decoder
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.client.Client
 
 trait PokeApi {
-  def getPokemon(name: String): IO[Pokemon]
+  def getPokemon[O: Decoder](name: String): IO[O]
   def getPokemonSpecies(url: String): IO[PokemonSpecies]
 }
 
 private class PokeApiImpl(httpClient: Client[IO], baseUrl: String) extends PokeApi {
 
-  override def getPokemon(name: String): IO[Pokemon] = {
+  override def getPokemon[O: Decoder](name: String): IO[O] = {
     val pokemonEndpoint = Uri.unsafeFromString(baseUrl + s"pokemon/$name")
-    httpClient.get(pokemonEndpoint)((response: Response[IO]) => handleHttpErrors[Pokemon](response))
+    httpClient.get(pokemonEndpoint)((response: Response[IO]) => handleHttpErrors[O](response))
   }
 
   override def getPokemonSpecies(url: String): IO[PokemonSpecies] = ???
@@ -30,7 +29,7 @@ private class PokeApiImpl(httpClient: Client[IO], baseUrl: String) extends PokeA
       case Status.NotFound => PokemonNotFound(response.status.reason).raiseError[IO, A]
       case Status.TooManyRequests => TooManyRequest(response.status.reason).raiseError[IO, A]
       case Status.InternalServerError => InternalServerError(response.status.reason).raiseError[IO, A]
-      case Status.BadRequest => BadRequest(response.status.reason).raiseError[IO, A]
+      case Status.BadRequest => PokeApiBadRequest(response.status.reason).raiseError[IO, A]
       case _ => ServiceNotAvailable(response.status.reason).raiseError[IO, A]
     }
 }

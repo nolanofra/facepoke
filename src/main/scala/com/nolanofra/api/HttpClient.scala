@@ -9,7 +9,7 @@ case class HttpClient(client: Client[IO])
 
 object HttpClient {
 
-  def apply: Resource[IO, HttpClient] =
+  def create: Resource[IO, HttpClient] =
     BlazeClientBuilder[IO].resource
       .map(client => Logger(logHeaders = true, logBody = true)(client))
       .map(client => HttpClient(client))

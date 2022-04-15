@@ -1,17 +1,20 @@
 package com.nolanofra.routes
 
-import cats.effect.IO
+import com.nolanofra.service.PokemonService
 import org.http4s.server.Router
 
-class FacePokeHttpRoutes private {
+class FacePokeHttpRoutes private (private val pokemonService: PokemonService) {
 
-  private val healthCheckRoute = HealthCheckRoute.healthCheck[IO]
+  private val healthCheckRoute = HealthCheckRoute.healthCheck
+  private val pokemonRoute = PokemonInfoRoute(pokemonService).infoPokemon
 
   val facePokeRoutes = Router(
-    "/" -> healthCheckRoute
+    "/" -> healthCheckRoute,
+    "/" -> pokemonRoute
   ).orNotFound
+
 }
 
 object FacePokeHttpRoutes {
-  def apply() = new FacePokeHttpRoutes
+  def apply(pokemonService: PokemonService) = new FacePokeHttpRoutes(pokemonService)
 }

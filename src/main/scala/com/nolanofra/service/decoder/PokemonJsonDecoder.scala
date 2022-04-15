@@ -1,10 +1,10 @@
-package com.nolanofra.model.decoder
+package com.nolanofra.service.decoder
 
-import com.nolanofra.model.PokemonEndpointResponse.{ FlavorText, Language, Pokemon, PokemonSpecies, Species }
+import com.nolanofra.service.model.PokemonEndpointResponse.{ FlavorText, Language, Pokemon, PokemonSpecies, Species }
 import io.circe.Decoder
 import org.http4s.Uri
 
-object JsonDecoder {
+object PokemonJsonDecoder {
 
   implicit val uriDecoder = Decoder.decodeString.map(Uri.unsafeFromString)
   implicit val speciesDecoder = Decoder.forProduct2("name", "url")(Species)

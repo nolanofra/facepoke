@@ -1,16 +1,11 @@
 package com.nolanofra.routes
 
-import cats.Monad
-import cats.effect.Sync
+import cats.effect.IO
 import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
+import org.http4s.dsl.io.{ ->, /, GET, Ok, Root, _ }
 
 object HealthCheckRoute {
 
-  def healthCheck[F[_]](implicit F: Sync[F]): HttpRoutes[F] = {
-    val dsl = Http4sDsl[F]
-    import dsl._
-
-    HttpRoutes.of[F] { case GET -> Root / "health" => Ok() }
-  }
+  def healthCheck: HttpRoutes[IO] =
+    HttpRoutes.of[IO] { case GET -> Root / "health" => Ok() }
 }

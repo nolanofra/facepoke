@@ -1,4 +1,4 @@
-package com.nolanofra.model
+package com.nolanofra.service.model
 
 import org.http4s.Uri
 

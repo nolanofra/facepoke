@@ -1,8 +1,8 @@
-package com.nolanofra.decoder
+package com.nolanofra.service.decoder
 
 import cats.implicits._
-import com.nolanofra.model.PokemonEndpointResponse._
-import com.nolanofra.model.decoder.JsonDecoder._
+import com.nolanofra.service.model.PokemonEndpointResponse._
+import com.nolanofra.service.decoder.PokemonJsonDecoder._
 import io.circe.literal._
 import org.http4s.Uri
 import org.scalatest.funsuite.AnyFunSuite
