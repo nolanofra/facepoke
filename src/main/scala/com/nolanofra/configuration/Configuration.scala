@@ -1,17 +1,15 @@
 package com.nolanofra.configuration
 
 import cats.effect.IO
+import com.typesafe.config.ConfigFactory
 
-case class PokemonApiConfigurations(baseUrl: String)
+case class PokeApiEndpointConfiguration(baseUrl: String)
 
 object Configuration {
   val serverHost = "0.0.0.0"
-  val serverPort = 8080
+  val serverPort = 5000
 
-  def loadPokemonEndpointBaseUrl: IO[PokemonApiConfigurations] =
-    Some("https://pokeapi.co/api/v2/") match {
-      //Properties.envOrNone("POKEMON_API") match {
-      case Some(url) => IO(PokemonApiConfigurations(url))
-      case _ => IO.raiseError(new NoSuchElementException("Env variable not found"))
-    }
+  def loadPokemonEndpointBaseUrl: IO[PokeApiEndpointConfiguration] =
+    IO.apply(ConfigFactory.load)
+      .map(config => PokeApiEndpointConfiguration(config.getString("pokeAPI.baseUrl")))
 }

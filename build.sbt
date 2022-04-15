@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
   circeLiteral,
   http4sDsl,
   logback,
+  typeSafeConfig,
   scalaTest
 )
 
