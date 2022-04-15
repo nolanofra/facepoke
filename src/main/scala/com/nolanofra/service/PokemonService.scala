@@ -11,8 +11,14 @@ class PokemonService private (
 
   def pokemonInformation(pokemonName: String) =
     for {
-      pokemon <- pokeAPi.getPokemon[Pokemon](pokemonName)
-    } yield FacePoke(pokemon.species.name)
+      pokemon <- pokeAPi.getPokemonSpecies[Pokemon](pokemonName)
+      description = pokemon.descriptionFor("en")
+    } yield FacePoke(
+      pokemon.name,
+      description.getOrElse("Description not found"),
+      pokemon.habitat.name,
+      pokemon.isLegendary
+    )
 }
 
 object PokemonService {

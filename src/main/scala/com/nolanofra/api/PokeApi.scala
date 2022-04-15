@@ -3,25 +3,21 @@ package com.nolanofra.api
 import cats.effect.IO
 import cats.implicits.catsSyntaxApplicativeErrorId
 import com.nolanofra.api.error.Errors._
-import com.nolanofra.service.model.PokemonEndpointResponse.PokemonSpecies
 import io.circe.Decoder
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.client.Client
 
 trait PokeApi {
-  def getPokemon[O: Decoder](name: String): IO[O]
-  def getPokemonSpecies(url: String): IO[PokemonSpecies]
+  def getPokemonSpecies[O: Decoder](name: String): IO[O]
 }
 
 private class PokeApiImpl(httpClient: Client[IO], baseUrl: String) extends PokeApi {
 
-  override def getPokemon[O: Decoder](name: String): IO[O] = {
-    val pokemonEndpoint = Uri.unsafeFromString(baseUrl + s"pokemon/$name")
+  override def getPokemonSpecies[O: Decoder](name: String): IO[O] = {
+    val pokemonEndpoint = Uri.unsafeFromString(baseUrl + s"pokemon-species/$name")
     httpClient.get(pokemonEndpoint)((response: Response[IO]) => handleHttpErrors[O](response))
   }
-
-  override def getPokemonSpecies(url: String): IO[PokemonSpecies] = ???
 
   private def handleHttpErrors[A: Decoder](response: Response[IO]) =
     response.status match {

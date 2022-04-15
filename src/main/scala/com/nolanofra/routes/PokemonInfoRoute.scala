@@ -1,7 +1,6 @@
 package com.nolanofra.routes
 
 import cats.effect.IO
-import cats.implicits._
 import com.nolanofra.api.error.Errors.{ PokeApiBadRequest, PokemonNotFound, TooManyRequest }
 import com.nolanofra.service.PokemonService
 import io.circe.generic.auto._

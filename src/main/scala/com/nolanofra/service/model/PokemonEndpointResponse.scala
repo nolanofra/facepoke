@@ -1,14 +1,14 @@
 package com.nolanofra.service.model
 
-import org.http4s.Uri
-
 object PokemonEndpointResponse {
 
-  case class Pokemon(species: Species)
+  case class Pokemon(name: String, habitat: Habitat, isLegendary: Boolean, flavorTextEntries: List[FlavorText]) {
 
-  case class Species(name: String, url: Uri)
+    def descriptionFor(language: String) =
+      flavorTextEntries.find(e => e.language.lang.equals(language)).map(_.text).map(_.trim)
+  }
 
-  case class PokemonSpecies(flavorTextEntries: List[FlavorText])
+  case class Habitat(name: String)
 
   case class FlavorText(text: String, language: Language)
 
