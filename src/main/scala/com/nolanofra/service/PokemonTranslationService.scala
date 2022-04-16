@@ -5,10 +5,10 @@ import com.nolanofra.api.Translations.{ Shakespeare, Translations, Yoda }
 import com.nolanofra.api.error.Errors.Errors
 import com.nolanofra.api.{ FunTranslationsApi, PokeApi }
 import com.nolanofra.domain.model.FacePoke
-import com.nolanofra.service.model.FunTranslationsResponse.Translation
+import com.nolanofra.service.decoder.PokemonJsonDecoder._
+import com.nolanofra.service.decoder.TranslationsDecoder._
 import com.nolanofra.service.model.PokemonEndpointResponse.Pokemon
-import decoder.PokemonJsonDecoder._
-import decoder.TranslationsDecoder._
+import com.nolanofra.service.model.FunTranslationsResponse.{ CaveHabitat, LegendaryPokemon, Translation }
 
 class PokemonTranslationService private (private val pokeApi: PokeApi, translationsApi: FunTranslationsApi) {
 
@@ -32,11 +32,12 @@ class PokemonTranslationService private (private val pokeApi: PokeApi, translati
     )
 
   private def calculateTranslationLanguage(pokemon: Pokemon): Translations =
-    if (pokemon.habitat.equals("cave") || pokemon.isLegendary) {
-      Yoda
-    } else {
-      Shakespeare
+    pokemon match {
+      case LegendaryPokemon(_) => Yoda
+      case CaveHabitat(_) => Yoda
+      case _ => Shakespeare
     }
+
 }
 
 object PokemonTranslationService {
