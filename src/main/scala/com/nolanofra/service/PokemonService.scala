@@ -1,7 +1,7 @@
 package com.nolanofra.service
 
 import com.nolanofra.api.PokeApi
-import com.nolanofra.domain.model.FacePoke
+import com.nolanofra.service.model.FacePoke
 
 class PokemonService private (
   private val pokeAPi: PokeApi
@@ -13,7 +13,7 @@ class PokemonService private (
       description = pokemon.descriptionFor("en")
     } yield FacePoke(
       pokemon.name,
-      description.getOrElse("Description not found"),
+      description,
       pokemon.habitat.name,
       pokemon.isLegendary
     )

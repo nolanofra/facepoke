@@ -6,7 +6,7 @@ import com.nolanofra.api.model.FunTranslationsResponse
 import com.nolanofra.api.model.FunTranslationsResponse.{ Contents, Translation }
 import com.nolanofra.api.{ FunTranslationsApi, PokeApi }
 import com.nolanofra.api.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
-import com.nolanofra.domain.model.FacePoke
+import com.nolanofra.service.model.FacePoke
 import munit.CatsEffectSuite
 
 class PokemonTranslationServiceTest extends CatsEffectSuite {
@@ -22,7 +22,7 @@ class PokemonTranslationServiceTest extends CatsEffectSuite {
     val expectedPokemon =
       FacePoke(
         pokemonName,
-        expectedTranslation,
+        Some(expectedTranslation),
         pokemonHabitat,
         isLegendary
       )
@@ -36,6 +36,43 @@ class PokemonTranslationServiceTest extends CatsEffectSuite {
     val translationApiStub = new FunTranslationsApi {
       override def translate(text: String, translations: TranslationType): IO[FunTranslationsResponse.Translation] = IO(
         Translation(Contents(expectedTranslation))
+      )
+    }
+
+    for {
+      actual <- PokemonTranslationService(pokeApiStub, translationApiStub).pokemonInformationTranslated(pokemonName)
+
+    } yield assertEquals(actual, expectedPokemon)
+  }
+
+  test("No English pokemon description is available") {
+    val pokemonName = "pokemonName"
+    val pokemonHabitat = "pokemonHabitat"
+    val pokemonDescription = "pokemonDescription"
+    val isLegendary = false
+
+    val expectedPokemon =
+      FacePoke(
+        pokemonName,
+        None,
+        pokemonHabitat,
+        isLegendary
+      )
+
+    val pokeApiStub = new PokeApi {
+      override def getPokemonSpecies(name: String): IO[Pokemon] = IO(
+        Pokemon(
+          pokemonName,
+          Habitat(pokemonHabitat),
+          false,
+          List(FlavorText(pokemonDescription, Language("notEnglishLanguage")))
+        )
+      )
+    }
+
+    val translationApiStub = new FunTranslationsApi {
+      override def translate(text: String, translations: TranslationType): IO[FunTranslationsResponse.Translation] = IO(
+        Translation(Contents(""))
       )
     }
 

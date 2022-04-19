@@ -3,7 +3,7 @@ package com.nolanofra.service
 import cats.effect.IO
 import com.nolanofra.api.PokeApi
 import com.nolanofra.api.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
-import com.nolanofra.domain.model.FacePoke
+import com.nolanofra.service.model.FacePoke
 import munit.CatsEffectSuite
 
 class PokemonServiceTest extends CatsEffectSuite {
@@ -18,7 +18,7 @@ class PokemonServiceTest extends CatsEffectSuite {
     val expectedPokemon =
       FacePoke(
         pokemonName,
-        pokemonDescription,
+        Some(pokemonDescription),
         pokemonHabitat,
         isLegendary
       )
@@ -26,6 +26,39 @@ class PokemonServiceTest extends CatsEffectSuite {
     val pokeApiStub = new PokeApi {
       override def getPokemonSpecies(name: String): IO[Pokemon] = IO(
         Pokemon(pokemonName, Habitat(pokemonHabitat), false, List(FlavorText(pokemonDescription, Language("en"))))
+      )
+    }
+
+    for {
+      actual <- PokemonService(pokeApiStub)
+        .pokemonInformation(pokemonName)
+
+    } yield assertEquals(actual, expectedPokemon)
+  }
+
+  test("No English description available when retrieving basic pokemon information") {
+
+    val pokemonName = "pokemonName"
+    val pokemonHabitat = "pokemonHabitat"
+    val pokemonDescription = "pokemonDescription"
+    val isLegendary = false
+
+    val expectedPokemon =
+      FacePoke(
+        pokemonName,
+        None,
+        pokemonHabitat,
+        isLegendary
+      )
+
+    val pokeApiStub = new PokeApi {
+      override def getPokemonSpecies(name: String): IO[Pokemon] = IO(
+        Pokemon(
+          pokemonName,
+          Habitat(pokemonHabitat),
+          false,
+          List(FlavorText(pokemonDescription, Language("notEnglishLanguage")))
+        )
       )
     }
 
