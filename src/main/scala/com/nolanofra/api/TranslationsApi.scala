@@ -1,29 +1,30 @@
 package com.nolanofra.api
 
 import cats.effect.IO
-import com.nolanofra.api.Translations.Translations
-import io.circe.Decoder
+import com.nolanofra.api.TranslationType.TranslationType
+import com.nolanofra.api.error.Errors._
 import org.http4s.Method.POST
 import org.http4s.client.Client
 import org.http4s.headers.`Content-Type`
 import org.http4s.{ Headers, MediaType, Request, Uri, UrlForm }
-import com.nolanofra.api.error.Errors._
+import com.nolanofra.api.decoder.TranslationsDecoder._
+import com.nolanofra.api.model.FunTranslationsResponse.Translation
 
-object Translations extends Enumeration {
-  type Translations = Value
+object TranslationType extends Enumeration {
+  type TranslationType = Value
   val Shakespeare = Value("shakespeare")
   val Yoda = Value("yoda")
 }
 
 trait FunTranslationsApi {
-  def translate[O: Decoder](text: String, translations: Translations): IO[O]
+  def translate(text: String, translations: TranslationType): IO[Translation]
 }
 
 class FunTranslationsApiImpl private (httpClient: Client[IO], baseUrl: String) extends FunTranslationsApi {
 
-  override def translate[O: Decoder](text: String, translations: Translations): IO[O] = {
+  override def translate(text: String, translationType: TranslationType): IO[Translation] = {
     val funTranslationEndpoint =
-      Uri.unsafeFromString(baseUrl + s"$translations.json")
+      Uri.unsafeFromString(baseUrl + s"$translationType.json")
 
     val request = Request[IO](
       method = POST,
@@ -37,7 +38,7 @@ class FunTranslationsApiImpl private (httpClient: Client[IO], baseUrl: String) e
       )
     )
 
-    httpClient.run(request).use(handleHttpErrors[O])
+    httpClient.run(request).use(handleHttpErrors[Translation])
   }
 }
 

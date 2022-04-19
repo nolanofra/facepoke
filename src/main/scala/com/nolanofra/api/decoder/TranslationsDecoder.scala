@@ -1,6 +1,6 @@
-package com.nolanofra.service.decoder
+package com.nolanofra.api.decoder
 
-import com.nolanofra.service.model.FunTranslationsResponse.{ Contents, Translation }
+import com.nolanofra.api.model.FunTranslationsResponse.{ Contents, Translation }
 import io.circe.Decoder
 
 object TranslationsDecoder {

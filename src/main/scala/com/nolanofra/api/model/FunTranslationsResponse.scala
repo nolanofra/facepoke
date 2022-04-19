@@ -1,4 +1,4 @@
-package com.nolanofra.service.model
+package com.nolanofra.api.model
 
 import com.nolanofra.api.model.PokemonEndpointResponse.Pokemon
 

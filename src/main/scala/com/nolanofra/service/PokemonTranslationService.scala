@@ -1,13 +1,12 @@
 package com.nolanofra.service
 
 import cats.effect.IO
-import com.nolanofra.api.Translations.{ Shakespeare, Translations, Yoda }
+import com.nolanofra.api.TranslationType.{ Shakespeare, TranslationType, Yoda }
 import com.nolanofra.api.error.Errors.Errors
+import com.nolanofra.api.model.FunTranslationsResponse.{ CaveHabitat, LegendaryPokemon }
 import com.nolanofra.api.model.PokemonEndpointResponse.Pokemon
 import com.nolanofra.api.{ FunTranslationsApi, PokeApi }
 import com.nolanofra.domain.model.FacePoke
-import com.nolanofra.service.model.FunTranslationsResponse.{ CaveHabitat, LegendaryPokemon, Translation }
-import com.nolanofra.service.decoder.TranslationsDecoder._
 
 class PokemonTranslationService private (private val pokeApi: PokeApi, translationsApi: FunTranslationsApi) {
 
@@ -16,8 +15,8 @@ class PokemonTranslationService private (private val pokeApi: PokeApi, translati
       pokemon <- pokeApi.getPokemonSpecies(pokemonName)
       description = pokemon.descriptionFor("en").getOrElse("Description not found")
       text <- translationsApi
-        .translate[Translation](description, calculateTranslationLanguage(pokemon))
-        .flatMap { case t: Translation =>
+        .translate(description, calculateTranslationLanguage(pokemon))
+        .flatMap { case t =>
           IO.apply(t.contents.translated)
         }
         .handleErrorWith { case _: Errors =>
@@ -30,7 +29,7 @@ class PokemonTranslationService private (private val pokeApi: PokeApi, translati
       pokemon.isLegendary
     )
 
-  private def calculateTranslationLanguage(pokemon: Pokemon): Translations =
+  private def calculateTranslationLanguage(pokemon: Pokemon): TranslationType =
     pokemon match {
       case LegendaryPokemon(_) => Yoda
       case CaveHabitat(_) => Yoda
