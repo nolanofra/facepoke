@@ -10,6 +10,8 @@ object LibraryDependencies {
   val typeSafeConfigVersion = "1.4.2"
   val catsEffectScalaTestVersion = "0.5.4"
   val munitCatsEffectVersion = "1.0.7"
+  val testContainerVersion = "0.40.5"
+  val mockserverClientVersion = "5.13.2"
 
   val catsEffect = "org.typelevel" %% "cats-effect" % catsVersion
   val http4sServer = "org.http4s" %% "http4s-blaze-server" % http4sVersion
@@ -20,6 +22,9 @@ object LibraryDependencies {
   val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sVersion
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion % Runtime
   val typeSafeConfig = "com.typesafe" % "config" % typeSafeConfigVersion
+  val testContainers = "com.dimafeng" %% "testcontainers-scala-scalatest" % testContainerVersion
+  val mockServerClient = "org.mock-server" % "mockserver-client-java" % mockserverClientVersion
+  val mockServer = "com.dimafeng" %% "testcontainers-scala-mockserver" % testContainerVersion
   val munitCatsEffect = "org.typelevel" %% "munit-cats-effect-3" % munitCatsEffectVersion % Test
-  val scalaTest = "org.scalatest" %% "scalatest" % scalaTestVersion % Test
+  val scalaTest = "org.scalatest" %% "scalatest" % scalaTestVersion
 }
