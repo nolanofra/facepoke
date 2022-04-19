@@ -2,8 +2,6 @@ package com.nolanofra.service
 
 import com.nolanofra.api.PokeApi
 import com.nolanofra.domain.model.FacePoke
-import com.nolanofra.service.model.PokemonEndpointResponse.Pokemon
-import decoder.PokemonJsonDecoder._
 
 class PokemonService private (
   private val pokeAPi: PokeApi
@@ -11,7 +9,7 @@ class PokemonService private (
 
   def pokemonInformation(pokemonName: String) =
     for {
-      pokemon <- pokeAPi.getPokemonSpecies[Pokemon](pokemonName)
+      pokemon <- pokeAPi.getPokemonSpecies(pokemonName)
       description = pokemon.descriptionFor("en")
     } yield FacePoke(
       pokemon.name,

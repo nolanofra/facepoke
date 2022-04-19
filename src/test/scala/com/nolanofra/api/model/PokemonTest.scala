@@ -1,6 +1,6 @@
-package com.nolanofra.service.model
+package com.nolanofra.api.model
 
-import com.nolanofra.service.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
+import com.nolanofra.api.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
 import org.scalatest.funsuite.AnyFunSuite
 
 class PokemonTest extends AnyFunSuite {

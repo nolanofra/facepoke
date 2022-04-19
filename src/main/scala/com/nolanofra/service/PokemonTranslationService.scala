@@ -3,18 +3,17 @@ package com.nolanofra.service
 import cats.effect.IO
 import com.nolanofra.api.Translations.{ Shakespeare, Translations, Yoda }
 import com.nolanofra.api.error.Errors.Errors
+import com.nolanofra.api.model.PokemonEndpointResponse.Pokemon
 import com.nolanofra.api.{ FunTranslationsApi, PokeApi }
 import com.nolanofra.domain.model.FacePoke
-import com.nolanofra.service.decoder.PokemonJsonDecoder._
-import com.nolanofra.service.decoder.TranslationsDecoder._
-import com.nolanofra.service.model.PokemonEndpointResponse.Pokemon
 import com.nolanofra.service.model.FunTranslationsResponse.{ CaveHabitat, LegendaryPokemon, Translation }
+import com.nolanofra.service.decoder.TranslationsDecoder._
 
 class PokemonTranslationService private (private val pokeApi: PokeApi, translationsApi: FunTranslationsApi) {
 
   def pokemonInformationTranslated(pokemonName: String) =
     for {
-      pokemon <- pokeApi.getPokemonSpecies[Pokemon](pokemonName)
+      pokemon <- pokeApi.getPokemonSpecies(pokemonName)
       description = pokemon.descriptionFor("en").getOrElse("Description not found")
       text <- translationsApi
         .translate[Translation](description, calculateTranslationLanguage(pokemon))

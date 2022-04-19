@@ -1,4 +1,4 @@
-package com.nolanofra.service.model
+package com.nolanofra.api.model
 
 object PokemonEndpointResponse {
 

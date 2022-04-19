@@ -1,6 +1,6 @@
 package com.nolanofra.service.model
 
-import com.nolanofra.service.model.PokemonEndpointResponse.Pokemon
+import com.nolanofra.api.model.PokemonEndpointResponse.Pokemon
 
 object FunTranslationsResponse {
   case class Contents(translated: String)

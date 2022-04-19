@@ -21,6 +21,7 @@ lazy val projectSettings = Seq(
 )
 
 libraryDependencies ++= Seq(
+  catsEffect,
   http4sServer,
   http4sCirce,
   http4sClient,
@@ -29,7 +30,8 @@ libraryDependencies ++= Seq(
   http4sDsl,
   logback,
   typeSafeConfig,
-  scalaTest
+  scalaTest,
+  munitCatsEffect
 )
 
 lazy val root = (project in file("."))

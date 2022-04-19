@@ -1,6 +1,6 @@
-package com.nolanofra.service.decoder
+package com.nolanofra.api.decoder
 
-import com.nolanofra.service.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
+import com.nolanofra.api.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
 import io.circe.Decoder
 
 object PokemonJsonDecoder {

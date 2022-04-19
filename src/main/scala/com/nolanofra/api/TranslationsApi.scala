@@ -8,8 +8,6 @@ import org.http4s.client.Client
 import org.http4s.headers.`Content-Type`
 import org.http4s.{ Headers, MediaType, Request, Uri, UrlForm }
 import com.nolanofra.api.error.Errors._
-import com.nolanofra.service.decoder.TranslationsDecoder.shakespeareDecoder
-import com.nolanofra.service.model.FunTranslationsResponse.Translation
 
 object Translations extends Enumeration {
   type Translations = Value
