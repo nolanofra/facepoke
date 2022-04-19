@@ -22,9 +22,8 @@ class PokemonInfoRoute private (
       .of[IO] { case GET -> Root / "pokemon" / pokemonName =>
         pokemonService
           .pokemonInformation(pokemonName)
-          .flatMap {
-            case pokemon => Ok(pokemon.asJson)
-            case _ => NotFound("Pokemon not found")
+          .flatMap { case pokemon =>
+            Ok(pokemon.asJson)
           }
           .handleErrorWith {
             case _: PokemonNotFound => NotFound("Pokemon not found")
@@ -43,9 +42,8 @@ class PokemonInfoRoute private (
       .of[IO] { case GET -> Root / "pokemon" / "translated" / pokemonName =>
         translationService
           .pokemonInformationTranslated(pokemonName)
-          .flatMap {
-            case pokemon => Ok(pokemon.asJson)
-            case _ => NotFound("Pokemon not found")
+          .flatMap { case pokemon =>
+            Ok(pokemon.asJson)
           }
           .handleErrorWith {
             case _: PokemonNotFound => NotFound("Pokemon not found")
