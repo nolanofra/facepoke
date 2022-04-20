@@ -2,6 +2,10 @@ package com.nolanofra.api.model
 
 object PokemonEndpointResponse {
 
+  case object EnglishLanguage {
+    val lang = "en"
+  }
+
   case class Pokemon(name: String, habitat: Habitat, isLegendary: Boolean, flavorTextEntries: List[FlavorText]) {
 
     def descriptionFor(language: String) =

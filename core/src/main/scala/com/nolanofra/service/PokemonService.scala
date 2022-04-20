@@ -1,6 +1,7 @@
 package com.nolanofra.service
 
 import com.nolanofra.api.PokeApi
+import com.nolanofra.api.model.PokemonEndpointResponse.EnglishLanguage
 import com.nolanofra.service.model.FacePoke
 
 class PokemonService private (
@@ -10,7 +11,7 @@ class PokemonService private (
   def pokemonInformation(pokemonName: String) =
     for {
       pokemon <- pokeAPi.getPokemonSpecies(pokemonName)
-      description = pokemon.descriptionFor("en")
+      description = pokemon.descriptionFor(EnglishLanguage.lang)
     } yield FacePoke(
       pokemon.name,
       description,
