@@ -1,29 +1,61 @@
 package facepoke
 
-import cats.effect.IO
 import com.dimafeng.testcontainers.{ Container, ForAllTestContainer, MultipleContainers }
-import org.http4s.{ Response, Status, Uri }
+import com.nolanofra.api.model.PokemonEndpointResponse.{ FlavorText, Habitat, Language, Pokemon }
+import facepoke.Containers.{ client, mockServerClient }
+import io.circe.literal.JsonStringContext
+import org.mockserver.model.HttpRequest.request
+import org.mockserver.model.HttpResponse.response
 import org.scalatest.funsuite.AnyFunSuite
+import sttp.client3.quick._
+import sttp.model.StatusCode
 
 class FacePokeIT extends AnyFunSuite with ForAllTestContainer {
 
   override def container: Container = MultipleContainers(
-    Containers.mockServer,
+    Containers.mockServerContainer,
     Containers.apiContainer
   )
 
-  test("Health Check") {
-    val actual: IO[Status] = Containers.clients.use { case (httpClient, _) =>
-      val healthCheck: Uri = Uri.unsafeFromString(
-        s"http://${Containers.apiContainer.container.getHost}:${Containers.apiContainer.mappedPort(5000)}/health"
-      )
+  test("test") {
+    val request = basicRequest.get(
+      uri"http://${Containers.apiContateiner.container.getHost}:${Containers.apiContainer.mappedPort(5000)}/health"
+    )
 
-      for {
-        response <- httpClient.get(healthCheck)((response: Response[IO]) => IO(response.status))
-      } yield response
-    }
-
-    actual.map(status => assert(status == Status.Ok))
+    val response = request.send(client)
+    assert(response.code == StatusCode.Ok)
   }
 
+  test("Retrieve basic info") {
+
+    val expectedPokemon =
+      Pokemon(
+        "pokemonName",
+        Habitat("pokemonHabitat"),
+        isLegendary = false,
+        List(FlavorText("pokemonDescription", Language("en")))
+      )
+
+    mockServerClient
+      .when(request().withPath("/pokemon-species/pokemonName"))
+      .respond(response().withBody(Expectations.pokemonSpeciesResponse(expectedPokemon)))
+
+    val pokemonRequest = basicRequest
+      .get(
+        uri"http://${Containers.apiContainer.container.getHost}:${Containers.apiContainer
+          .mappedPort(5000)}/pokemon/${expectedPokemon.name}"
+      )
+
+    val pokemonResponse = pokemonRequest.send(client)
+
+    val expectedBody =
+      json"""{
+        "name": ${expectedPokemon.name},
+        "description":${expectedPokemon.descriptionFor("en")},
+        "habitat":${expectedPokemon.habitat.name},
+        "isLegendary": ${expectedPokemon.isLegendary}
+        }""".noSpaces
+
+    pokemonResponse.body.map(r => assert(r == expectedBody))
+  }
 }

@@ -12,6 +12,7 @@ object LibraryDependencies {
   val munitCatsEffectVersion = "1.0.7"
   val testContainerVersion = "0.40.5"
   val mockserverClientVersion = "5.13.2"
+  val sttpCientVersion = "3.5.2"
 
   val catsEffect = "org.typelevel" %% "cats-effect" % catsVersion
   val http4sServer = "org.http4s" %% "http4s-blaze-server" % http4sVersion
@@ -25,6 +26,7 @@ object LibraryDependencies {
   val testContainers = "com.dimafeng" %% "testcontainers-scala-scalatest" % testContainerVersion
   val mockServerClient = "org.mock-server" % "mockserver-client-java" % mockserverClientVersion
   val mockServer = "com.dimafeng" %% "testcontainers-scala-mockserver" % testContainerVersion
-  val munitCatsEffect = "org.typelevel" %% "munit-cats-effect-3" % munitCatsEffectVersion % Test
+  val munitCatsEffect = "org.typelevel" %% "munit-cats-effect-3" % munitCatsEffectVersion
   val scalaTest = "org.scalatest" %% "scalatest" % scalaTestVersion
+  val sttpClient = "com.softwaremill.sttp.client3" %% "core" % sttpCientVersion
 }

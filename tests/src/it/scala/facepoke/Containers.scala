@@ -1,21 +1,20 @@
 package facepoke
 
-import cats.effect.{ IO, Resource }
 import com.dimafeng.testcontainers.{ GenericContainer, MockServerContainer }
-import org.http4s.client.JavaNetClientBuilder
 import org.mockserver.client.MockServerClient
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
+import sttp.client3.HttpURLConnectionBackend
 
 object Containers {
 
-  val network = Network.newNetwork
+  val network = Network.newNetwork()
   val networkAlias = "mockserver"
   val exposedPort = 1080
 
-  lazy val mockServer = MockServerContainer("5.13.1").configure { c =>
+  val mockServerContainer = MockServerContainer("5.13.1").configure { c =>
     c.withNetwork(network)
     c.withNetworkAliases(networkAlias)
     c.withExposedPorts(exposedPort)
@@ -24,29 +23,24 @@ object Containers {
     ()
   }
 
-  lazy val apiContainer = GenericContainer(
-    dockerImage = "nolanofra/test",
+  val apiContainer = GenericContainer(
+    dockerImage = "nolanofra/tests",
     exposedPorts = Seq(5000),
-    waitStrategy = Wait.forLogMessage(".*started at http://0.0.0.0:5000/.*", 1)
+    waitStrategy = Wait.forLogMessage(".*started at http://0.0.0.0:5000/.*", 1),
+    env = Map(
+      "POKE_API_BASE_URL" -> s"http://${networkAlias}:${exposedPort}/",
+      "TRANSLATION_API_BASE_URL" -> s"http://${networkAlias}:${exposedPort}/"
+    )
+    //classpathResourceMapping = Seq(FileSystemBind("application.conf", "/app/application.conf", BindMode.READ_ONLY))
   ).configure { provider =>
     provider.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("ApiServer")))
     provider.withNetwork(network)
     ()
   }
 
-  private lazy val mockServerClient =
-    Resource.make(IO(new MockServerClient(mockServer.container.getHost, mockServer.container.getServerPort))) {
-      client =>
-        IO {
-          client.reset() //I have to do this because the client shutdown the server when the resource is released
-          ()
-        }
-    }
+  lazy val mockServerClient =
+    new MockServerClient(mockServerContainer.container.getHost, mockServerContainer.container.getServerPort)
 
-  def clients =
-    for {
-      httpClient <- JavaNetClientBuilder[IO].resource
-      mockServerClient <- mockServerClient
-    } yield (httpClient, mockServerClient)
+  val client = HttpURLConnectionBackend()
 
 }

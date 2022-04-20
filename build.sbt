@@ -13,37 +13,56 @@ inThisBuild(
 
 val projectName = "facepoke"
 
-lazy val projectSettings = Seq(
-  name := projectName,
-  organization := "com.nolanofra",
+lazy val commonSettings = Seq(
+  organization := "nolanofra",
   scalaVersion := "2.13.8",
-  scalafmtOnCompile := true,
-  libraryDependencies ++= Seq(
-    catsEffect,
-    http4sServer,
-    http4sCirce,
-    http4sClient,
-    circeGeneric,
-    circeLiteral,
-    http4sDsl,
-    logback,
-    typeSafeConfig,
-    scalaTest,
-    munitCatsEffect
-  )
+  scalafmtOnCompile := true
 )
+
+lazy val core = (project in file("core"))
+  .settings(commonSettings)
+  .settings(name := projectName)
+  .settings(
+    libraryDependencies ++= Seq(
+      catsEffect,
+      http4sServer,
+      http4sCirce,
+      http4sClient,
+      circeGeneric,
+      circeLiteral,
+      http4sDsl,
+      logback,
+      typeSafeConfig,
+      scalaTest,
+      munitCatsEffect
+    )
+  )
+  .settings(parallelExecution in Test := false)
+  .settings(test in assembly := {})
+  .settings(assemblyJarName in assembly := projectName + ".jar")
+  .enablePlugins(DockerPlugin)
+  .settings(dockerfile in docker := {
+    dockerFile(assembly.value)
+  })
+  .settings(assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") => MergeStrategy.singleOrError
+    case x =>
+      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      oldStrategy(x)
+  })
 
 lazy val tests = project
   .in(file("tests"))
   .settings(name := "tests")
   .configs(IntegrationTest)
   .settings(Defaults.itSettings)
-  .settings(projectSettings)
+  .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
       testContainers,
       mockServer,
-      mockServerClient
+      mockServerClient,
+      sttpClient
     )
   )
   .settings(parallelExecution in IntegrationTest := false)
@@ -53,19 +72,6 @@ lazy val tests = project
   .settings(dockerfile in docker := dockerFile((assembly in core).value))
   .dependsOn(core)
 
-lazy val core = (project in file("."))
-  .enablePlugins(NoPublishPlugin)
-  .settings(projectSettings)
-  .settings(parallelExecution in Test := false)
-  .settings(test in assembly := {})
-  .settings(assemblyJarName in assembly := projectName + ".jar")
-  .settings(assemblyMergeStrategy in assembly := {
-    case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") => MergeStrategy.singleOrError
-    case x =>
-      val oldStrategy = (assemblyMergeStrategy in assembly).value
-      oldStrategy(x)
-  })
-
 def dockerFile(dependsOn: File) = {
   val artifactTargetPath = s"/app/${dependsOn.name}"
 
@@ -73,8 +79,8 @@ def dockerFile(dependsOn: File) = {
     from("openjdk:11-jre")
     add(dependsOn, artifactTargetPath)
     entryPoint("java", "-jar", artifactTargetPath)
-    expose(80)
-    label("org.containers.image.source", s"https://github.com/azanin/${projectName}")
+    expose(5000)
+    label("org.containers.image.source", s"https://github.com/nolanofra/${projectName}")
   }
 }
 
