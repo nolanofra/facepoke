@@ -37,9 +37,8 @@ object Containers {
     ()
   }
 
-  lazy val mockServerClient =
+  def mockServerClient =
     new MockServerClient(mockServerContainer.container.getHost, mockServerContainer.container.getServerPort)
 
   val client = HttpURLConnectionBackend()
-
 }

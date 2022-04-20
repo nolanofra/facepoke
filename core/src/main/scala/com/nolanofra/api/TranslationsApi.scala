@@ -24,7 +24,7 @@ class FunTranslationsApiImpl private (httpClient: Client[IO], baseUrl: String) e
 
   override def translate(text: String, translationType: TranslationType): IO[Translation] = {
     val funTranslationEndpoint =
-      Uri.unsafeFromString(baseUrl + s"$translationType.json")
+      Uri.unsafeFromString(baseUrl + s"translate/$translationType.json")
 
     val request = Request[IO](
       method = POST,

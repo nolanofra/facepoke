@@ -1,7 +1,7 @@
 package com.nolanofra.routes
 
 import cats.effect.IO
-import com.nolanofra.api.error.Errors.{ PokeApiBadRequest, PokemonNotFound, TooManyRequest }
+import com.nolanofra.api.error.Errors.{ PokeApiBadRequest, PokemonNotFound, ServiceNotAvailable, TooManyRequest }
 import com.nolanofra.service.{ PokemonService, PokemonTranslationService }
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -29,6 +29,7 @@ class PokemonInfoRoute private (
             case _: PokemonNotFound => NotFound("Pokemon not found")
             case _: TooManyRequest => TooManyRequests("Too many request")
             case _: PokeApiBadRequest => BadRequest("Bad request")
+            case _: ServiceNotAvailable => ServiceUnavailable("Service not available")
             case t => InternalServerError(t.getMessage)
           }
       }
@@ -49,6 +50,7 @@ class PokemonInfoRoute private (
             case _: PokemonNotFound => NotFound("Pokemon not found")
             case _: TooManyRequest => TooManyRequests("Too many request")
             case _: PokeApiBadRequest => BadRequest("Bad request")
+            case _: ServiceNotAvailable => ServiceUnavailable("Service not available")
             case t => InternalServerError(t.getMessage)
           }
       }

@@ -7,7 +7,7 @@ import com.nolanofra.routes.FacePokeHttpRoutes
 import com.nolanofra.service.{ PokemonService, PokemonTranslationService }
 import org.http4s.blaze.server.BlazeServerBuilder
 
-object FacePokeApropplication extends IOApp {
+object FacePokeApplication extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] =
     HttpClient.create.use { httpClient: HttpClient =>

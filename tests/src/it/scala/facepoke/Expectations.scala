@@ -5,7 +5,8 @@ import io.circe.literal.JsonStringContext
 
 object Expectations {
 
-  def pokemonSpeciesResponse(pokemon: Pokemon) = json""" {
+  def pokemonSpeciesResponse(pokemon: Pokemon) =
+    json""" {
     "name": ${pokemon.name},
     "is_legendary": ${pokemon.isLegendary},
     "habitat": {
@@ -21,4 +22,16 @@ object Expectations {
       """)}
      
   }""".noSpaces
+
+  def translationResponse(translatedText: String) =
+    json"""{
+      "success": {
+        "total": 1
+      },
+      "contents": {
+        "translated": $translatedText,
+        "text": "to be translated",
+        "translation": "shakespeare"
+      }
+    }""".noSpaces
 }

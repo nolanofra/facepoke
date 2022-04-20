@@ -21,7 +21,6 @@ object Errors {
       case Status.Ok => response.asJsonDecode[A]
       case Status.NotFound => PokemonNotFound(response.status.reason).raiseError[IO, A]
       case Status.TooManyRequests => TooManyRequest(response.status.reason).raiseError[IO, A]
-      case Status.InternalServerError => InternalServerError(response.status.reason).raiseError[IO, A]
       case Status.BadRequest => PokeApiBadRequest(response.status.reason).raiseError[IO, A]
       case _ => ServiceNotAvailable(response.status.reason).raiseError[IO, A]
     }
