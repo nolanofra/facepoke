@@ -17,9 +17,9 @@ class FacePokeIT extends AnyFunSuite with ForAllTestContainer {
     Containers.apiContainer
   )
 
-  test("test") {
+  test("test health check route") {
     val request = basicRequest.get(
-      uri"http://${Containers.apiContateiner.container.getHost}:${Containers.apiContainer.mappedPort(5000)}/health"
+      uri"http://${Containers.apiContainer.container.getHost}:${Containers.apiContainer.mappedPort(5000)}/health"
     )
 
     val response = request.send(client)
