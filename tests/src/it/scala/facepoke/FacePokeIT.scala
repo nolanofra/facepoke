@@ -58,4 +58,22 @@ class FacePokeIT extends AnyFunSuite with ForAllTestContainer {
 
     pokemonResponse.body.map(r => assert(r == expectedBody))
   }
+
+  test("Unknown pokemonName: 404, not found") {
+
+    val notExistingPokemonName = "notExistingPokemon"
+
+    mockServerClient
+      .when(request().withPath("/pokemon-species/" + notExistingPokemonName))
+      .respond(response().withStatusCode(404))
+
+    val pokemonRequest = basicRequest
+      .get(
+        uri"http://${Containers.apiContainer.container.getHost}:${Containers.apiContainer
+          .mappedPort(5000)}/pokemon/${notExistingPokemonName}"
+      )
+
+    val pokemonResponse = pokemonRequest.send(client)
+    assert(pokemonResponse.code == StatusCode.NotFound)
+  }
 }

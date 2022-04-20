@@ -31,7 +31,6 @@ object Containers {
       "POKE_API_BASE_URL" -> s"http://${networkAlias}:${exposedPort}/",
       "TRANSLATION_API_BASE_URL" -> s"http://${networkAlias}:${exposedPort}/"
     )
-    //classpathResourceMapping = Seq(FileSystemBind("application.conf", "/app/application.conf", BindMode.READ_ONLY))
   ).configure { provider =>
     provider.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("ApiServer")))
     provider.withNetwork(network)
